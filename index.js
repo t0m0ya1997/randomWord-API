@@ -1,3 +1,5 @@
+const PORT = process.env.PORT || 5000
+
 // import express module
 const express = require("express");
 
@@ -24,4 +26,4 @@ app.get('/api/rword/v1/getWord/:num', (req, res) => {
     res.send(wordList);
 });
 
-app.listen(3000, () => console.log("Listening on port 3000."));
+app.listen(PORT, () => console.log(`Listening on ${ PORT }`));

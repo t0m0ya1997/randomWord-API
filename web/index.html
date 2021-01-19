@@ -14,7 +14,7 @@
         var r;
         const num = 100;
         function getWords(){
-            fetch("https://warm-thicket-77963.herokuapp.com/api/rword/v1/getWord/1000")
+            fetch("./api/rword/v1/getWord/1000")
             .then((responce) => responce.json())
             .then((wordList) => {
                 //const startTime = performance.now();
