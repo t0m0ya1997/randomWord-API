@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>Word cascade</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/p5.js"></script>
+    <link rel="stylesheet" href="stylesheet.css">
+</head>
+<body>
+    <script>
+        let wordBuffer = [];
+        var words = [];
+        var cx, cy;
+        var r;
+        const num = 100;
+        function getWords(){
+            fetch("./api/rword/v1/getWord/1000")
+            .then((responce) => responce.json())
+            .then((wordList) => {
+                //const startTime = performance.now();
+                for(i=0;i<wordList.length;i++){
+                    wordBuffer.push(wordList[i]);
+                }
+                //console.log(performance.now() - startTime);
+            })
+        }
+
+        function splash(posx, posy){
+             fill(frameCount / 240 * 255);
+             textSize(30);
+             textAlign(CENTER);
+             text("Word Cascade", posx, posy);
+        }
+
+        let word = class{
+            constructor(str, x){
+                this.str = str;
+                this.speed = random(1, 5);
+                this.x = x;
+                this.y = -200;
+                this.fs = floor(random(16, 32));
+                this.isRed = (random(0, 1) < 0.1);
+            }
+            move(){
+                this.y += this.speed;
+            }
+            display(){
+                fill(0);
+                textAlign(CENTER);
+                textSize(this.fs);
+                text(this.str, this.x, this.y);
+                /*
+                push();
+                translate(this.x, this.y);
+                rotate(radians(90));
+                text(this.str, 0, 0);
+                pop();
+                */
+                //textAlign(CENTER);
+            }
+        };
+
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
+            getWords();
+            for(i=0;i<num;i++){
+                words[i] = new word(wordBuffer.pop(), random(0, width));
+            }
+            textFont('Arial');
+            cx = width / 2;
+            cy = height / 2;
+        }
+
+        function draw() {
+            background(255);
+            if(wordBuffer.length<1){
+                getWords();
+            }
+            for(i=0;i<num;i++){
+                if(words[i].y > height + 50){
+                    words[i] = new word(wordBuffer.pop(), random(0, width));
+                }
+                words[i].move();
+                words[i].display();
+            }
+            if(frameCount < 240){
+                splash(cx, cy);
+            }
+        }
+    </script>
+</body>
